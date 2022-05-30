@@ -38,7 +38,7 @@ class Profile {
     if(hobbies.length == 0) {
       return toHobbiesString;
     } else {
-      toHobbiesString = "Mes hobbies sont: ";
+      toHobbiesString = "";
       hobbies.forEach((hobbie) {
         toHobbiesString += '$hobbies, ';
       });

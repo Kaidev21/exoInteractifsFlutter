@@ -12,6 +12,7 @@ class ProfilePageState extends State<ProfilePage> {
   late TextEditingController surnameController;
   late TextEditingController nameController;
   late TextEditingController secretController;
+  late TextEditingController ageController;
   bool showSecret = false;
   Map<String, bool> hobbies = {
     "Football" : false,
@@ -27,9 +28,11 @@ class ProfilePageState extends State<ProfilePage> {
     surnameController = TextEditingController();
     nameController = TextEditingController();
     secretController = TextEditingController();
+    ageController = TextEditingController();
     surnameController.text = myProfile.surname;
     nameController.text = myProfile.name;
     secretController.text = myProfile.secret;
+    ageController.text = myProfile.age.toString();
   }
 
   @override
@@ -69,7 +72,7 @@ class ProfilePageState extends State<ProfilePage> {
               ),
               Container(
                 width: width,
-                height: height /2,
+                height: height,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -95,6 +98,21 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
                       onFieldSubmitted: (value) {
                         setState(() {
+                          updateUser();
+                        });
+                      },
+                    ),
+                    TextFormField(
+                      controller: ageController,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        icon: const Icon(Icons.accessibility_new),
+                        hintText: "Entrez votre âge",
+                        labelText: "Âge"
+                      ),
+                      keyboardType: TextInputType.number,
+                      onFieldSubmitted: (value) {
+                        setState((){
                           updateUser();
                         });
                       },
@@ -149,7 +167,26 @@ class ProfilePageState extends State<ProfilePage> {
                       thickness: 2,
                       color: Colors.purple,
                     ),
+                    const Text("Modifier les infos",
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textScaleFactor: 1.2,
+                    ),
                     myHobbies(),
+                    const Divider(
+                      thickness: 2,
+                      color: Colors.purple,
+                    ),
+                    const Text("Langage préféré",
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textScaleFactor: 1.2,
+                    ),
+                    myRadios(),
                   ],
                 ),
               ),
@@ -164,7 +201,12 @@ class ProfilePageState extends State<ProfilePage> {
       myProfile =  Profile (
         surname: (surnameController.text != myProfile.surname) ? surnameController.text:surnameController.text,
         name: (nameController.text != myProfile.name) ? nameController.text : myProfile.name,
-        secret: secretController.text
+        secret: secretController.text,
+        favoriteLang: myProfile.favoriteLang,
+        hobbies: myProfile.hobbies,
+        height: myProfile.height,
+        age: int.parse(ageController.text),
+        gender: myProfile.gender
       );
     });
   }
@@ -216,7 +258,7 @@ class ProfilePageState extends State<ProfilePage> {
   Column myHobbies() {
     List<Widget> widgets = [];
     hobbies.forEach((hobby, like) {
-          Row r = Row(
+    Row r = Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -238,6 +280,29 @@ class ProfilePageState extends State<ProfilePage> {
           widgets.add(r);
     });
     return Column(children: widgets);
+  }
+
+  Row myRadios() {
+    List<Widget> w = [];
+    List<String> langs = ["Dart", "Swift", "Kotlin", "Java", "Python"];
+    int index = langs.indexWhere((lang) => lang.startsWith(myProfile.favoriteLang));
+    for(var x = 0; x < langs.length; x++) {
+      Column c = Column (
+        children: [
+          Text(langs[x]),
+          Radio(value: x, groupValue: index, onChanged: (newValue) {
+            setState(() {
+              myProfile.favoriteLang = langs[newValue as int];
+            });
+          },)
+        ],
+      );
+      w.add(c);
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: w,
+    );
   }
 
 }
