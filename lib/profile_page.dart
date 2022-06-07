@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'profile.dart';
 
@@ -7,6 +10,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+
+  final ImagePicker _picker = ImagePicker();
+  XFile? image;
 
   Profile myProfile = Profile();
   late TextEditingController surnameController;
@@ -58,6 +64,27 @@ class ProfilePageState extends State<ProfilePage> {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: informations(width/0.2, height/3.5),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.photo_album),
+                    color: Colors.red,
+                    iconSize: 30,
+                    onPressed: () {
+                      pickImage(ImageSource.gallery);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.camera_enhance),
+                    color: Colors.red,
+                    iconSize: 30,
+                    onPressed: () {
+                      pickImage(ImageSource.camera);
+                    },
+                  ),
+                ],
               ),
               const Divider(
                 thickness: 2,
@@ -230,10 +257,24 @@ class ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text("Nom: ${myProfile.setName()}"),
-          Text("Age: " + myProfile.setAge()),
-          Text("Taille: " + myProfile.setHeight()),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              (image == null) ? Text("Aucune Image") :
+              Image.file(image as File, height: height/7),
+              Column(
+                children: [
+                  Text("Age: " + myProfile.setAge()),
+                  Text("Taille: " + myProfile.setHeight()),
+                  Text("Genre: " + myProfile.genderString()),
+                ],
+              )
+            ],
+          ),
+
           Text("Hobbies: " + myProfile.setHobbies()),
-          Text("Genre: " + myProfile.genderString()),
+
           Text("Langage de programmation favori: " + myProfile.favoriteLang),
           ElevatedButton(
             onPressed: () {
@@ -303,6 +344,16 @@ class ProfilePageState extends State<ProfilePage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: w,
     );
+  }
+
+  Future pickImage(ImageSource source) async {
+     XFile? pickedImage = await _picker.pickImage(source: source);
+     if(image == null) {
+       print("Nous n'avons pas pu récupérer d'image");
+     } else {
+       image = pickedImage;
+       print(image?.name);
+     }
   }
 
 }

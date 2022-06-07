@@ -40,7 +40,7 @@ class Profile {
     } else {
       toHobbiesString = "";
       hobbies.forEach((hobbie) {
-        toHobbiesString += '$hobbies, ';
+        toHobbiesString = '$hobbies, ';
       });
       return toHobbiesString;
     }
