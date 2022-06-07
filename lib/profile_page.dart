@@ -232,7 +232,8 @@ class ProfilePageState extends State<ProfilePage> {
         favoriteLang: myProfile.favoriteLang,
         hobbies: myProfile.hobbies,
         height: myProfile.height,
-        age: int.parse(ageController.text),
+        age: int.parse(ageController.text
+        ),
         gender: myProfile.gender
       );
     });
@@ -262,7 +263,7 @@ class ProfilePageState extends State<ProfilePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               (image == null) ? Text("Aucune Image") :
-              Image.file(image as File, height: height/7),
+              Image.file(File(image!.path), height: height/2, width: 200),
               Column(
                 children: [
                   Text("Age: " + myProfile.setAge()),
@@ -348,12 +349,14 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future pickImage(ImageSource source) async {
      XFile? pickedImage = await _picker.pickImage(source: source);
-     if(image == null) {
-       print("Nous n'avons pas pu récupérer d'image");
-     } else {
-       image = pickedImage;
-       print(image?.name);
-     }
+     setState((){
+       if(pickedImage == null) {
+         print("Nous n'avons pas pu récupérer d'image");
+       } else {
+         image = pickedImage;
+         print(image?.name);
+       }
+     });
   }
 
 }
